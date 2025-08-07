@@ -1,6 +1,6 @@
 # Smart Git Commit
 
-I'll analyze your changes and create a meaningful commit message.
+I'll analyze your changes, update CLAUDE.md if needed, create a meaningful commit message and push it into the current branch.
 
 **Pre-Commit Quality Checks:**
 Before committing, I'll verify:
@@ -8,6 +8,7 @@ Before committing, I'll verify:
 - Tests pass (if test command exists)
 - Linter passes (if lint command exists)
 - No obvious errors in changed files
+- CLAUDE.md is updated if the changes affect Claude's understanding of the project
 
 First, let me check if this is a git repository and what's changed:
 
@@ -37,6 +38,31 @@ Now I'll analyze the changes to determine:
 1. What files were modified
 2. The nature of changes (feature, fix, refactor, etc.)
 3. The scope/component affected
+4. **Check if CLAUDE.md needs updating based on:**
+    - New features or significant functionality changes
+    - Architecture or structure modifications
+    - New dependencies or tools added
+    - API changes or new endpoints
+    - Configuration changes that affect project behavior
+    - Documentation that would help Claude understand the project better
+
+**CLAUDE.md Update Process:**
+If changes require CLAUDE.md updates, I will:
+1. Read the current CLAUDE.md (if it exists)
+2. Analyze what sections need updates based on the changes
+3. Update relevant sections with new information
+4. Ensure the documentation remains clear and helpful for AI understanding
+5. Stage the updated CLAUDE.md along with other changes
+
+```bash
+# Check if CLAUDE.md exists and read its current content
+if [ -f "CLAUDE.md" ]; then
+    echo "CLAUDE.md found - checking if updates are needed..."
+    # Analysis will determine if updates are required
+else
+    echo "No CLAUDE.md found - will create one if significant changes warrant it"
+fi
+```
 
 If the analysis or commit encounters errors:
 - I'll explain what went wrong
@@ -50,6 +76,12 @@ if git diff --cached --quiet; then
     git add -u
 fi
 
+# If CLAUDE.md was updated, stage it too
+if [ -f "CLAUDE.md" ] && git diff CLAUDE.md --quiet; then
+    git add CLAUDE.md
+    echo "CLAUDE.md updated and staged"
+fi
+
 # Show what will be committed
 git diff --cached --name-status
 ```
@@ -59,10 +91,11 @@ Based on the analysis, I'll create a conventional commit message:
 - **Scope**: component or area affected (optional)
 - **Subject**: clear description in present tense
 - **Body**: why the change was made (if needed)
+- **Note**: If CLAUDE.md was updated, this will be mentioned appropriately in the commit message
 
 ```bash
 # I'll create the commit with the analyzed message
-# Example: git commit -m "fix(auth): resolve login timeout issue"
+# Example: git commit -m "feat(auth): add OAuth integration and update project docs"
 ```
 
 The commit message will be concise, meaningful, and follow your project's conventions if I can detect them from recent commits.
